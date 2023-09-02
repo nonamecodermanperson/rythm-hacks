@@ -103,6 +103,48 @@ def patient_signup():
             signup_message = "Signup successful! You can now log in."
 
     return render_template('patient-signup.html', signup_message=signup_message)
+@app.route('/second-page')
+def second_page():
+    return render_template('second-page.html')  # Corrected template name
+
+@app.route('/second-page-patient')
+def second_page_patient():
+    return render_template('second-page-patient.html')  # Corrected template name
+
+@app.route('/report-writer')
+def report_writer():
+    patient_name = request.args.get('name')
+    symptoms = request.args.get('symptoms')
+    diagnosis = request.args.get('diagnosis')
+    recommendations = request.args.get('recommendations')
+
+    return render_template('report-writer.html', patient_name=patient_name, symptoms=symptoms, diagnosis=diagnosis, recommendations=recommendations)
+
+
+@app.route('/generate-report', methods=['POST'])
+def generate_report():
+    symptoms = request.form.get('symptoms')
+    diagnosis = request.form.get('diagnosis')
+    recommendations = request.form.get('recommendations')
+
+    prompt = f"Symptoms: {symptoms}\nDiagnosis: {diagnosis}\nRecommendations: {recommendations}"
+
+    try:
+        response = openai.Completion.create(
+            engine="davinci",
+            prompt=prompt,
+            max_tokens=300
+        )
+        generated_report = response.choices[0].text.strip()
+        return jsonify({'generated_report': generated_report})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    
+
+@app.route('/ehr')
+def ehr():
+    return render_template('ehr.html')
+
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -118,9 +160,6 @@ def forgot_password():
 
 
 
-@app.route('/second-page-patient')
-def second_page_patient():
-    return render_template('second-page-patient.html')
 
 
 @app.route('/diagnosis-tool')
