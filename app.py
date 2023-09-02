@@ -6,7 +6,7 @@ import os
 users = []
 
 app = Flask(__name__)
-os.environ["OPENAI_API_KEY"] = "sk-J0dRynt3nZbGVwX7lH"
+os.environ["OPENAI_API_KEY"] = "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"
 
 @app.route('/')
 def index():
@@ -100,6 +100,48 @@ def patient_signup():
             signup_message = "Signup successful! You can now log in."
 
     return render_template('patient-signup.html', signup_message=signup_message)
+@app.route('/second-page')
+def second_page():
+    return render_template('second-page.html')  # Corrected template name
+
+@app.route('/second-page-patient')
+def second_page_patient():
+    return render_template('second-page-patient.html')  # Corrected template name
+
+@app.route('/report-writer')
+def report_writer():
+    patient_name = request.args.get('name')
+    symptoms = request.args.get('symptoms')
+    diagnosis = request.args.get('diagnosis')
+    recommendations = request.args.get('recommendations')
+
+    return render_template('report-writer.html', patient_name=patient_name, symptoms=symptoms, diagnosis=diagnosis, recommendations=recommendations)
+
+
+@app.route('/generate-report', methods=['POST'])
+def generate_report():
+    symptoms = request.form.get('symptoms')
+    diagnosis = request.form.get('diagnosis')
+    recommendations = request.form.get('recommendations')
+
+    prompt = f"Symptoms: {symptoms}\nDiagnosis: {diagnosis}\nRecommendations: {recommendations}"
+
+    try:
+        response = openai.Completion.create(
+            engine="davinci",
+            prompt=prompt,
+            max_tokens=300
+        )
+        generated_report = response.choices[0].text.strip()
+        return jsonify({'generated_report': generated_report})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    
+
+@app.route('/ehr')
+def ehr():
+    return render_template('ehr.html')
+
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -113,6 +155,35 @@ def forgot_password():
     # If it's a GET request, render the forgot password form
     return render_template('forgot-password.html')
 
+
+
+
+
+@app.route('/diagnosis-tool')
+def diagnosis_tool():
+    return render_template('diagnosis-tool.html')
+
+@app.route('/get_diagnosis', methods=['POST'])
+def get_diagnosis():
+    user_input = request.form['user_input']
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=user_input,
+            temperature=0.5,
+            max_tokens=100
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        print("OpenAI API Error:", str(e))
+        return "An error occurred while processing your request."
+
+
+@app.route('/logout')
+def logout():
+    # Clear any user session or cookies if needed
+    # Redirect to the login page
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
