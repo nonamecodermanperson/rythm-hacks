@@ -6,7 +6,7 @@ import os
 users = []
 
 app = Flask(__name__)
-os.environ["OPENAI_API_KEY"] = "sk-J0dRynt3nZbGVwX7lH"
+os.environ["OPENAI_API_KEY"] = "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"
 
 @app.route('/')
 def index():
@@ -155,6 +155,38 @@ def forgot_password():
     # If it's a GET request, render the forgot password form
     return render_template('forgot-password.html')
 
+
+
+@app.route('/second-page-patient')
+def second_page_patient():
+    return render_template('second-page-patient.html')
+
+
+@app.route('/diagnosis-tool')
+def diagnosis_tool():
+    return render_template('diagnosis-tool.html')
+
+@app.route('/get_diagnosis', methods=['POST'])
+def get_diagnosis():
+    user_input = request.form['user_input']
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=user_input,
+            temperature=0.5,
+            max_tokens=100
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        print("OpenAI API Error:", str(e))
+        return "An error occurred while processing your request."
+
+
+@app.route('/logout')
+def logout():
+    # Clear any user session or cookies if needed
+    # Redirect to the login page
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
