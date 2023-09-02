@@ -136,7 +136,18 @@ def generate_report():
         return jsonify({'generated_report': generated_report})
     except Exception as e:
         return jsonify({'error': str(e)})
-    
+   
+@app.route('/get_diagnosis', methods=['POST'])
+def get_diagnosis():
+    user_input = request.form['user_input']
+    response = openai.Completion.create(
+      engine="text-davinci-003",
+      prompt=user_input,
+      temperature=0.5,
+      max_tokens=100
+    )
+    return response.choices[0].text.strip()
+
 
 @app.route('/ehr')
 def ehr():
@@ -155,6 +166,15 @@ def forgot_password():
     # If it's a GET request, render the forgot password form
     return render_template('forgot-password.html')
 
+@app.route('/diagnosis-tool')
+def diagnosis_tool():
+        return render_template('diagnosis-tool.html')
+
+@app.route('/logout')
+def logout():
+    # Clear any user session or cookies if needed
+    # Redirect to the login page
+    return redirect(url_for('index'))
 
 
 @app.route('/second-page-patient')
