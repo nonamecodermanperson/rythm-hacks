@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MediAI: Patient Portal</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+        }
+        .btn-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-4">MedicalAI: Patient Portal</h1>
+            <div class="nav-item">
+                <a href="{{ url_for('patient_login') }}" class="btn btn-primary btn-lg mr-3">Login</a>
+            
+                <a href="{{ url_for('patient_signup') }}" class="btn btn-success btn-lg">Sign Up</a>
+           
+        </div>
+    </div>
+</body>
+</html>
