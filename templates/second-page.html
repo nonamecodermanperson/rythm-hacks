@@ -74,7 +74,22 @@
         .logout-button {
             margin-left: auto; /* Move the logout button to the right */
         }
+        
+        /* Custom styles for the new content */
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
 
+        .container h1 {
+            font-size: 36px;
+        }
+
+        .container p {
+            font-size: 18px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body class="{{ color_mode }}">
@@ -99,7 +114,31 @@
             </ul>
         </div>
     </nav>
-    
+
+    <!-- New content -->
+    <div class="container">
+        <h1>Doctors Portal</h1>
+        <p>
+            Within our doctors portal, we have designed and created two tools that go hand in hand within the medical space. To begin our Ai-Powered Report Writer these are some key features:
+        </p>
+        <ul>
+            <li>
+                Integration with Healthcare Systems: Seamlessly integrated with existing EHR systems, the AI-powered report generator ensures data security, privacy compliance, and accessibility to medical records, providing a comprehensive and unified healthcare solution.
+            </li>
+            <li>
+                Multilingual Support: To cater to diverse patient populations, the AI-powered report generator offers multilingual support, ensuring that doctors can communicate effectively with patients from various cultural backgrounds.
+            </li>
+            <li>
+                Time Efficiency: By automating the report generation process, doctors can significantly reduce the time spent on administrative tasks, enabling them to focus more on patient care and clinical duties.
+            </li>
+        </ul>
+        <p>
+            Next onto the second feature mentioned before; the Electronic Health Records. There is no program like ours, we seamlessly integrated a local database within our web app that allows for doctors to store information about patients and their reports in the same place. This EHR is editable, and easily accessible from wherever whenever at all times.
+        </p>
+        <p>
+            Join us in improving the healthcare society in terms of efficiency and organization moving into the future world.
+        </p>
+    </div>
 
     <div class="color-blind-toggle">
         <div class="color-mode-select">
@@ -110,7 +149,7 @@
                 <option value="deuteranopia">Deuteranopia</option>
                 <option value="tritanopia">Tritanopia</option>
             </select>
-            <div class="color-mode-description"s>
+            <div class="color-mode-description">
                 Color modes simulate different types of color blindness.
             </div>
         </div>

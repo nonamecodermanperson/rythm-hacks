@@ -114,7 +114,6 @@ h1 {
     background-color: #f4f4f4;
 }
 
-
     </style>
 </head>
 <body class="{{ color_mode }}">
@@ -208,7 +207,7 @@ const medicalKeywords = [
     'racing heart', 'redness', 'restless legs', 'shivering', 'sinus congestion', 'sneezing', 'sore muscles', 'sore throat',
     'spasms', 'stiff neck', 'stomach cramps', 'stuffy nose', 'sweating', 'swollen glands', 'tender skin', 'tingling',
     'tiredness', 'upset stomach', 'vertigo', 'vomiting', 'watery eyes', 'weakness', 'wheezing', 'worn out', 'wound healing',
-    ,'uncomfortable', 'vomiting', 'weakness', 'worn out', 'wound',
+    ,'uncomfortable', 'vomiting', 'weakness', 'worn out', 'wound', 'allergies'
   
 ];
 
@@ -226,6 +225,14 @@ diagnosisForm.addEventListener('submit', (event) => {
         const isMedical = medicalKeywords.some(keyword => text.toLowerCase().includes(keyword));
         if (isMedical) {
             diagnosisResult.textContent = text;
+            let delay = 0; // Initial delay time
+        const delayIncrement = 30; // Delay time between each character
+        for (const character of generatedReport) {
+            setTimeout(() => {
+                generatedReportOutput.textContent += character;
+            }, delay);
+            delay += delayIncrement;
+        }
         } else {
             diagnosisResult.textContent = 'Please provide a medical statement or add more detail to your problem.';
         }

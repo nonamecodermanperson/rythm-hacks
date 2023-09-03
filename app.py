@@ -1,17 +1,51 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, g
-
+from flask_sqlalchemy import SQLAlchemy
+from googletrans import Translator
 import openai
+import speech_recognition as sr
 import os
 
 users = []
 
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'  # SQLite database, you can change this to another database if needed
+db = SQLAlchemy(app)
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+
 os.environ["OPENAI_API_KEY"] = "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"
+LANGUAGES = {
+    'en': 'English',
+    'fr': 'French',
+    'es': 'Spanish',
+}
+
+def get_user_language():
+    # Detect the user's preferred language (you can enhance this logic)
+    user_language = request.accept_languages.best_match(list(LANGUAGES.keys()))
+    return user_language
 
 @app.route('/')
 def index():
     return render_template('index.html')
+def speech_to_text():
+    recognizer = sr.Recognizer()
 
+    try:
+        with sr.Microphone() as source:
+            print("Speak something...")
+            audio = recognizer.listen(source)
+
+        # Use the Google Web Speech API to convert audio to text
+        text = recognizer.recognize_google(audio)
+        return text
+    except sr.UnknownValueError:
+        return "Speech recognition could not understand audio."
+    except sr.RequestError as e:
+        return f"Could not request results from Google Web Speech API; {e}"
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -19,7 +53,7 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        matched_user = next((user for user in users if user['username'] == username and user['password'] == password), None)
+        matched_user = User.query.filter_by(username=username, password=password).first()
 
         if matched_user:
             # Log successful login event
@@ -32,9 +66,24 @@ def login():
             return render_template('login.html', error_message="Invalid username or password")
 
     return render_template('login.html')
-@app.route('/second-page')
-def second_page():
-    return render_template('second-page.html')  # Corrected template name
+
+@app.route('/translate', methods=['POST'])
+def translate():
+    if request.method == 'POST':
+        text_to_translate = request.form.get('text_to_translate')
+        target_language = request.form.get('target_language')
+
+        translator = Translator()
+
+        try:
+            translation = translator.translate(text_to_translate, dest=target_language)
+            translated_text = translation.text
+            return jsonify({'translated_text': translated_text})
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    return jsonify({'error': 'Invalid request'})
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -64,16 +113,16 @@ def doctor_portal():
 def patient_portal():
     return render_template('patient-portal.html')
 
-
 @app.route('/patient-login', methods=['GET', 'POST'])
 def patient_login():
     error_message = None
-    
+
     if request.method == 'POST':
-        username = request.form.get('patient-username')  # Name attribute from the HTML form
-        password = request.form.get('patient-password')  # Name attribute from the HTML form
-        
-        matched_user = next((user for user in users if user['username'] == username and user['password'] == password), None)
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Check if the provided username and password match a user in the database
+        matched_user = User.query.filter_by(username=username, password=password).first()
 
         if matched_user:
             print(f"Successful login: {username}")
@@ -89,8 +138,8 @@ def patient_signup():
     signup_message = None
     
     if request.method == 'POST':
-        new_username = request.form.get('patient-username')  # Name attribute from the HTML form
-        new_password = request.form.get('patient-password')  # Name attribute from the HTML form
+        new_username = request.form.get('new-username')  # Name attribute from the HTML form
+        new_password = request.form.get('new-password')  # Name attribute from the HTML form
         
         # Check if the username already exists
         if any(user['username'] == new_username for user in users):
@@ -103,6 +152,7 @@ def patient_signup():
             signup_message = "Signup successful! You can now log in."
 
     return render_template('patient-signup.html', signup_message=signup_message)
+
 @app.route('/second-page')
 def second_page():
     return render_template('second-page.html')  # Corrected template name
@@ -119,7 +169,6 @@ def report_writer():
     recommendations = request.args.get('recommendations')
 
     return render_template('report-writer.html', patient_name=patient_name, symptoms=symptoms, diagnosis=diagnosis, recommendations=recommendations)
-
 
 @app.route('/generate-report', methods=['POST'])
 def generate_report():
@@ -139,12 +188,10 @@ def generate_report():
         return jsonify({'generated_report': generated_report})
     except Exception as e:
         return jsonify({'error': str(e)})
-    
 
 @app.route('/ehr')
 def ehr():
     return render_template('ehr.html')
-
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -157,10 +204,6 @@ def forgot_password():
 
     # If it's a GET request, render the forgot password form
     return render_template('forgot-password.html')
-
-
-
-
 
 @app.route('/diagnosis-tool')
 def diagnosis_tool():
@@ -180,7 +223,6 @@ def get_diagnosis():
     except Exception as e:
         print("OpenAI API Error:", str(e))
         return "An error occurred while processing your request."
-
 
 @app.route('/logout')
 def logout():

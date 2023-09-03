@@ -74,29 +74,21 @@
         .logout-button {
             margin-left: auto; /* Move the logout button to the right */
         }
-
-        /* Additional styles */
-        .top-right {
-            position: absolute;
-            top: 0;
-            right: 0;
-            margin: 10px;
-        }
-
-        .diagnosis-button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
+        
+        /* Custom styles for the new content */
+        .container {
             text-align: center;
-            text-decoration: none;
-            font-size: 18px;
-            border-radius: 10px;
-            transition: background-color 0.3s;
+            margin-top: 100px;
         }
 
-        .diagnosis-button:hover {
-            background-color: #0056b3;
-            color: #f2f2f2;
+        .container h1 {
+            font-size: 36px;
+        }
+
+        .container p {
+            font-size: 18px;
+            margin-top: 20px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -112,7 +104,6 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('diagnosis_tool') }}">Diagnosis Tool</a>
-
                 </li>
                 <li class="nav-item">
                     <a class="nav-link logout-button" href="/logout">Logout</a>
@@ -121,7 +112,37 @@
         </div>
     </nav>
 
-    <!-- Rest of your content -->
+    <!-- New content -->
+   
+<div class="container">
+    <h1>Patients Portal</h1>
+    <p>
+        Our Diagnosis Tool is a cutting-edge feature of MedicalAI, designed to assist both doctors and patients in understanding potential medical conditions based on the given symptoms. By providing relevant and specific medical information, this tool offers a preliminary analysis, acting as a valuable guidepost in your healthcare journey.
+    </p>
+    <h2>Key Features:</h2>
+    <ul>
+        <li>
+            <strong>Efficient Analysis:</strong> Quick, concise, and accurate insights to streamline the diagnostic process.
+        </li>
+        <li>
+            <strong>Supports Doctors & Patients:</strong> Whether you're a healthcare professional seeking a second opinion or a patient wanting a preliminary understanding, our tool stands ready to assist.
+        </li>
+        <li>
+            <strong>Data Quality Matters:</strong> The accuracy and relevance of the results depend on the quality of the input. Make sure to provide detailed and precise information for the best outcomes.
+        </li>
+        <li>
+            <strong>Safety Measures:</strong> The tool prioritizes valid medical information. If the provided details are inconsistent, insufficient, or not aligned with medical standards, it won't generate a diagnosis.
+        </li>
+    </ul>
+    <p>
+        <strong>Please Note:</strong> While our Diagnosis Tool is a product of advanced AI technology and extensive medical data, it is intended as a supplementary guide and not a replacement for professional medical advice. Always consult with healthcare professionals for a definitive diagnosis and appropriate treatment.
+    </p>
+    <p>
+        Join us in revolutionizing healthcare with MedicalAI. Experience the future of medical consultations today!
+    </p>
+</div>
+
+    </div>
 
     <div class="color-blind-toggle">
         <div class="color-mode-select">
